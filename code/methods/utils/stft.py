@@ -161,7 +161,7 @@ class STFT(DFTBase):
         fft_window = librosa.filters.get_window(window, win_length, fftbins=True)
 
         # Pad the window out to n_fft size
-        fft_window = librosa.util.pad_center(fft_window, n_fft)
+        fft_window = librosa.util.pad_center(fft_window, size=n_fft)
 
         # DFT & IDFT matrix
         self.W = self.dft_matrix(n_fft)
@@ -218,8 +218,8 @@ class STFT(DFTBase):
         
         real_out = torch.cat(real_out, dim=1)
         imag_out = torch.cat(imag_out, dim=1)
-
-        return real_out, imag_out
+        (mag, cos, sin) = magphase(real_out, imag_out)
+        return mag,cos,sin,real_out, imag_out
 
 
 def magphase(real, imag):
@@ -257,7 +257,7 @@ class ISTFT(DFTBase):
         ifft_window = librosa.filters.get_window(window, win_length, fftbins=True)
 
         # Pad the window out to n_fft size
-        ifft_window = librosa.util.pad_center(ifft_window, n_fft)
+        ifft_window = librosa.util.pad_center(ifft_window, size=n_fft)
 
         # DFT & IDFT matrix
         self.W = self.idft_matrix(n_fft) / n_fft
@@ -441,14 +441,14 @@ class LogmelFilterBank(nn.Module):
         """
         # Mel spectrogram
         mel_spectrogram = torch.matmul(input, self.melW)
-
+        
         # Logmel spectrogram
         if self.is_log:
             output = self.power_to_db(mel_spectrogram)
         else:
             output = mel_spectrogram
 
-        return output
+        return mel_spectrogram,output
 
 
     def power_to_db(self, input):

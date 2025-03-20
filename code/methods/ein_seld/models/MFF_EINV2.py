@@ -19,7 +19,7 @@ class MFF_EINV2(nn.Module):
         
         # Initial Stage (First Dual Conv)
         self.initial_stage = nn.Sequential(
-            DoubleConv(in_channels=7, out_channels=64),
+            DoubleConv(in_channels=6, out_channels=64),
             nn.Dropout(p=0.05),
         )
         
