@@ -110,7 +110,7 @@ class MFF_EINV2(nn.Module):
             x: spectrogram, (B, C, T, F)
         """
         # Initial Stage
-        x = self.initial_stage(x) # [B, 7, T, F]  --> [b, 64, T, F]
+        x = self.initial_stage(x) # [B, 6, T, F]  --> [b, 64, T, F]
 
         # MFF Module
         x = self.mff_module(x)
